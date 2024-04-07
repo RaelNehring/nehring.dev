@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cliente da Calculadora</title>
+</head>
+<body>
+    <h1>Cliente da Calculadora</h1>
+
+    <form id="calc-form">
+        <label for="valor1">Valor 1:</label>
+        <input type="number" id="valor1" name="valor1" required><br><br>
+        <label for="valor2">Valor 2:</label>
+        <input type="number" id="valor2" name="valor2" required><br><br>
+        <label for="operacao">Operação:</label>
+        <select id="operacao" name="operacao" required>
+            <option value="+">Soma (+)</option>
+            <option value="-">Subtração (-)</option>
+            <option value="*">Multiplicação (*)</option>
+            <option value="/">Divisão (/)</option>
+        </select><br><br>
+        <button type="submit">Calcular</button>
+    </form>
+
+    <div id="resultado"></div>
+
+    <script>
+        const form = document.getElementById('calc-form');
+        const resultado = document.getElementById('resultado');
+
+        form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const valor1 = document.getElementById('valor1').value;
+        const valor2 = document.getElementById('valor2').value;
+        const operacao = document.getElementById('operacao').value;
+
+        const data = JSON.stringify({
+            valor1,
+            valor2,
+            operacao,
+        });
+
+        fetch('https://api-sd.nehring.dev/calc', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: data,
+        })
+            .then((response) => response.json())
+            .then((responseData) => {
+            resultado.textContent = responseData.resultado;
+            });
+        });
+    </script>
+</body>
+</html>
