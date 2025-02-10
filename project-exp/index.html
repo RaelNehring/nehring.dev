@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contagem Regressiva</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f0f0f0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      padding: 20px 30px;
+      text-align: center;
+      max-width: 450px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    #countdown {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .note {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Contagem Regressiva para 10/04/2028</h1>
+    <div id="countdown">Calculando...</div>
+
+     <!-- Seção de Links Úteis -->
+  </div>
+
+  <script>
+    // Data-alvo: 10 de abril de 2028
+    const dataObjetivo = new Date(2028, 3, 10); // Mês em JS é 0-based (3 = Abril)
+
+    function calcularDiferenca(agora, objetivo) {
+      // Se a data atual já passou da data objetivo, retornamos zero para tudo
+      if (agora >= objetivo) {
+        return { anos: 0, meses: 0, semanas: 0, dias: 0, expirou: true };
+      }
+
+      // "Zeramos" horas, min, seg de ambas as datas para comparar apenas dia/mês/ano
+      const dataInicial = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+      const dataFinal   = new Date(objetivo.getFullYear(), objetivo.getMonth(), objetivo.getDate());
+
+      let anos = 0;
+      let meses = 0;
+      let semanas = 0;
+      let dias = 0;
+
+      // Contagem de anos
+      while (true) {
+        const proximaData = new Date(dataInicial);
+        proximaData.setFullYear(proximaData.getFullYear() + 1);
+        // Se ainda está dentro ou no mesmo dia da data final, incrementa
+        if (proximaData <= dataFinal) {
+          anos++;
+          dataInicial.setFullYear(dataInicial.getFullYear() + 1);
+        } else {
+          break;
+        }
+      }
+
+      // Contagem de meses
+      while (true) {
+        const proximaData = new Date(dataInicial);
+        proximaData.setMonth(proximaData.getMonth() + 1);
+        // Se ainda está dentro ou no mesmo dia da data final, incrementa
+        if (proximaData <= dataFinal) {
+          meses++;
+          dataInicial.setMonth(dataInicial.getMonth() + 1);
+        } else {
+          break;
+        }
+      }
+
+      // Contagem de semanas
+      while (true) {
+        const proximaData = new Date(dataInicial);
+        proximaData.setDate(proximaData.getDate() + 7);
+        if (proximaData <= dataFinal) {
+          semanas++;
+          dataInicial.setDate(dataInicial.getDate() + 7);
+        } else {
+          break;
+        }
+      }
+
+      // Contagem de dias
+      while (true) {
+        const proximaData = new Date(dataInicial);
+        proximaData.setDate(proximaData.getDate() + 1);
+        if (proximaData <= dataFinal) {
+          dias++;
+          dataInicial.setDate(dataInicial.getDate() + 1);
+        } else {
+          break;
+        }
+      }
+
+      return { anos, meses, semanas, dias, expirou: false };
+    }
+
+    function atualizarContagem() {
+      const agora = new Date();
+      const dif = calcularDiferenca(agora, dataObjetivo);
+
+      if (dif.expirou) {
+        document.getElementById('countdown').textContent = "A data já chegou!";
+      } else {
+        // Formatação do texto final
+        const textoContagem = 
+          dif.anos    + " ano"    + (dif.anos    !== 1 ? "s" : "") + ", " +
+          dif.meses   + " mês"    + (dif.meses   !== 1 ? "es" : "") + ", " +
+          dif.semanas + " semana" + (dif.semanas !== 1 ? "s" : "") + ", " +
+          dif.dias    + " dia"    + (dif.dias    !== 1 ? "s" : "");
+
+        document.getElementById('countdown').textContent = textoContagem;
+      }
+    }
+
+    // Atualiza a contagem a cada 1 segundo
+    setInterval(atualizarContagem, 1000);
+
+    // Chama imediatamente a função para não esperar 1 segundo na primeira vez
+    atualizarContagem();
+  </script>
+</body>
+</html>
